@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Extiende la vista GENÉRICA de Ajustes (base.res_config_settings_view_form)
+        creando una pestaña nueva e independiente llamada "PlannerPro", en vez
+        de intentar insertar contenido dentro de la pestaña "Inventario" ya
+        existente (lo cual requeriría adivinar su estructura interna exacta
+        y es propenso a errores de xpath).
+
+        Desde Odoo 17/18 la sintaxis de Ajustes usa los elementos semánticos
+        <app>, <block> y <setting> en lugar de la vieja estructura basada en
+        <div class="app_settings_block"> (usada hasta Odoo 16). Referencia:
+        https://www.odoo.com/documentation/18.0/developer/reference/user_interface/view_architectures.html
+
+        El xpath "//form" siempre existe (es el elemento raíz de la vista
+        res.config.settings.view.form), por lo que esta estrategia es
+        robusta y no depende de la estructura interna de otras pestañas.
+
+        NIVEL DE CERTEZA: la sintaxis <app>/<block>/<setting> fue verificada
+        contra ejemplos de módulos documentados específicamente para Odoo 18
+        (fuentes técnicas de terceros, no la página oficial completa). Si al
+        instalar esto la pestaña "PlannerPro" no aparece o se ve distinta a
+        lo esperado, ábrela en modo desarrollador (Ajustes > activar modo
+        desarrollador > icono de bug > Editar vista) para inspeccionar el
+        arch resultante.
+    -->
+    <record id="res_config_settings_view_form_plannerpro" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.stock.plannerpro</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="PlannerPro" name="stock_plannerpro_connector">
+                    <block title="Integración con PlannerPro">
+                        <setting string="URL del endpoint de PlannerPro"
+                                 help="URL a la que se envían las cotizaciones ligadas a las Órdenes de Entrega.">
+                            <field name="stock_plannerpro_endpoint_url"
+                                   placeholder="https://api.plannerpro.com/v1/deliveries"/>
+                        </setting>
+                        <setting string="API Key de PlannerPro"
+                                 help="API Key provista por PlannerPro (se envía en el header X-API-KEY).">
+                            <field name="stock_plannerpro_api_key" password="True"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

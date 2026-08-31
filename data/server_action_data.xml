@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Server Action (ir.actions.server) enlazado (binding) al modelo
+        stock.picking. Al tener binding_view_types="list", Odoo lo agrega
+        automáticamente al menú de Acciones (icono de engranaje ⚙️) de la
+        vista lista de stock.picking, funcionando con selección múltiple.
+
+        Referencia oficial:
+        https://www.odoo.com/documentation/18.0/developer/reference/backend/actions.html#bindings
+    -->
+    <record id="action_server_send_to_plannerpro" model="ir.actions.server">
+        <field name="name">Enviar a PlannerPro</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = records.action_send_to_plannerpro()
+        </field>
+        <!--
+            Recomendado (seguridad): restringir qué usuarios ven esta
+            acción en el menú, p. ej. solo el grupo de Inventario.
+            Descomenta y ajusta el external id del grupo si lo necesitas:
+        -->
+        <!-- <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]"/> -->
+    </record>
+</odoo>
